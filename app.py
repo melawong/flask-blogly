@@ -60,7 +60,7 @@ def process_form():
 # GET /users/[user-id]
 # Show information about the given user.
 @app.get('/users/<int:id>')
-def show_user_details(id):
+def show_user_details():
 
 
 # Have a button to get to their edit page, and to delete the user.
