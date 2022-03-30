@@ -1,6 +1,6 @@
 """Blogly application."""
 
-from flask import Flask
+from flask import Flask, render_template, redirect
 from models import db, connect_db
 
 app = Flask(__name__)
@@ -13,16 +13,34 @@ app.config['SQLALCHEMY_ECHO'] = True
 connect_db(app)
 db.create_all()
 
-
-
 # GET /
 # Redirect to list of users. (We’ll fix this in a later step).
-# GET /users
-# Show all users.
+
+@app.get("/")
+def get_home_page():
+    """Return homepage"""
+    return redirect ("/get-users")
+
+## GET /users
+## Show all users.
 
 # Make these links to view the detail page for the user.
+## Have a link here to the add-user form.
 
-# Have a link here to the add-user form.
+@app.get("/get-users")
+def get_users():
+    """Retrieves all users in the db and renders template wth user list"""
+    userlist = Users.query.all()
+
+    return render_template("home.html", users = userlist)
+
+@app.get("/add-user")
+def add_user():
+    """returns a template with add user form"""
+    #in models create something that we can iterate for details about user
+    return render_template("add-user.html", inputs=userdetails)
+
+
 
 # GET /users/new
 # Show an add form for users
