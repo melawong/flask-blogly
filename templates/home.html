@@ -3,17 +3,21 @@
 
 {% block title %} Users {% endblock %}
 
-{% block h1 %} Users{% endblock %}
+{% block heading %} Users{% endblock %}
 
 {% block content %}
 
 {% for user in users %}
 
-<!-- make links for user in users!!-->
+<ol>
+    <li>   <!--make an anchor tag. when we click each one, how will we see correct person?-->
+        {{user.first_name}}
+    </li>
+</ol>
 
 {% endfor %}
 
-<form action="/add-user">
+<form action="/users/new">
     <button>Add user</button>
 </form>
 <!-- <button> MAKE AN A LINK FOR new user -->
