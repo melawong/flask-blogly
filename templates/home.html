@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Users {% endblock %}
+
+{% block h1 %} Users{% endblock %}
+
+{% block content %}
+
+{% for user in users %}
+
+<!-- make links for user in users!!-->
+
+{% endfor %}
+
+<form action="/add-user">
+    <button>Add user</button>
+</form>
+<!-- <button> MAKE AN A LINK FOR new user -->
+
+{% endblock %}
