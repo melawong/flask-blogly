@@ -4,8 +4,8 @@
 
 
 {% block content%}
-{{image}}
-{% block heading %} {{username}} {% endblock %}
+{{user_data.image}}
+{% block heading %} {{user_data.first_name}} {{user_data.last_name}} {% endblock %}
 
 <form action="/edit-user.html">
 <span>

@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 """Blogly application."""
 
 from flask import Flask, redirect, render_template, request
@@ -50,6 +48,7 @@ def add_user():
 
 @app.post('/users/new')
 def process_form():
+    """accepts form data and adds new user to db"""
     form_data = request.form
     first_name = form_data['first_name']
     last_name = form_data['last_name']
@@ -62,7 +61,10 @@ def process_form():
 # GET /users/[user-id]
 # Show information about the given user.
 @app.get('/users/<int:id>')
-def show_user_details():
+def show_user_details(id):
+    user_data = User.query.get(id)
+    breakpoint()
+    return render_template(f"/user-details/{id}.html", user_data = user_data)
 
 
 # Have a button to get to their edit page, and to delete the user.
@@ -76,4 +78,3 @@ def show_user_details():
 # Process the edit form, returning the user to the /users page.
 # POST /users/[user-id]/delete
 # Delete the user.
->>>>>>> 73a0363f48d2699f6c3891841bd10055c5e0c7e9
