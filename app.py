@@ -41,7 +41,7 @@ def get_users():
 def add_user():
     """Returns a template with add user form"""
     #in models create something that we can iterate for details about user
-    return render_template("users/new.html")
+    return render_template("add-user.html")
 
 # POST /users/new
 # Process the add form, adding a new user and going back to /users
@@ -49,17 +49,19 @@ def add_user():
 @app.post('/users/new')
 def process_form():
     form_data = request.form
-    f_name = form_data['first_name']
-    l_name = form_data['last_name']
-    img = form_data['image_link']
-
-    new_user = User(f_name, l_name, img)
+    first_name = form_data['first_name']
+    last_name = form_data['last_name']
+    img = form_data['image_url']
+    new_user = User(first_name = first_name, last_name = last_name, image_url = img)
     db.session.add(new_user)
+    db.session.commit()
     return redirect("/users")
-
 
 # GET /users/[user-id]
 # Show information about the given user.
+@app.get('/users/<int:id>')
+def show_user_details(id):
+
 
 # Have a button to get to their edit page, and to delete the user.
 
