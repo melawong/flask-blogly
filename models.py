@@ -12,7 +12,7 @@ def connect_db(app):
 DEFAULT_IMAGE_URL = 'https://i.imgflip.com/6atbfs.jpg'
 
 class User(db.Model):
-    '''Creates users.'''
+    """Adds user to database."""
 
     __tablename__ = 'users'
 
@@ -22,3 +22,15 @@ class User(db.Model):
     image_url = db.Column(db.String, default = DEFAULT_IMAGE_URL)
 
 
+
+class Post(db.Model):
+    """Add post to database and references users table."""
+
+    __tablename__ = 'posts'
+
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    title = db.Column(db.String, nullable = False)
+    content = db.Column(db.String, nullable = False)
+    created_at = db.Column(db.DateTime,
+    nullable = False, default= db.func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

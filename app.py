@@ -1,7 +1,7 @@
 """Blogly application."""
 
 from flask import Flask, redirect, render_template, request, flash
-from models import db, connect_db, User, DEFAULT_IMAGE_URL
+from models import db, connect_db, User, DEFAULT_IMAGE_URL, Post
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -20,7 +20,7 @@ db.create_all()
 
 @app.get("/")
 def get_home_page():
-    """Return homepage"""
+    """Redirect to users page"""
     return redirect ("/users")
 
 ## GET /users
@@ -32,9 +32,9 @@ def get_home_page():
 @app.get("/users")
 def get_users():
     """Retrieves all users in the db and renders template wth user list"""
-    userlist = User.query.all()
+    users = User.query.all()
 
-    return render_template("home.html", users = userlist)
+    return render_template("home.html", users = users)
 
 # GET /users/new
 # Show an add form for users
@@ -54,14 +54,14 @@ def process_new_user_form():
     form_data = request.form
     first_name = form_data['first_name']
     last_name = form_data['last_name']
-    img = form_data['image_url']
+    image_url = form_data.get('image_url') or None
 
-    if img == '':
-        img = DEFAULT_IMAGE_URL
-
-    new_user = User(first_name = first_name, last_name = last_name, image_url = img)
+    new_user = User(first_name = first_name, last_name = last_name,
+    image_url = image_url)
     db.session.add(new_user)
     db.session.commit()
+    flash('User Successfully Added!')
+
     return redirect("/users")
 
 # GET /users/[user-id]
@@ -70,9 +70,10 @@ def process_new_user_form():
 @app.get('/users/<int:id>')
 def show_user_details(id):
     """Accepts user detail request and user id, renders template corresponding to the id"""
-    user_data = User.query.get(id)
+    user = User.query.get(id)
+    posts = Post.query.filter(Post.user_id == id)
 
-    return render_template("user-details.html", user_data = user_data)
+    return render_template("user-details.html", user = user, posts = posts)
 
 
 
@@ -81,9 +82,9 @@ def show_user_details(id):
 @app.get('/users/<int:id>/edit')
 def get_edit_page(id):
     """Renders template to the edit-user.html with the correct id"""
-    user_data = User.query.get(id)
+    user = User.query.get(id)
 
-    return render_template("edit-user.html", user_data = user_data)
+    return render_template("edit-user.html", user = user)
 
 # POST /users/[user-id]/edit
 # Process the edit form, returning the user to the /users page.
@@ -91,28 +92,16 @@ def get_edit_page(id):
 @app.post('/users/<int:id>/edit')
 def process_update(id):
     """Accepts form data and adds new user to db"""
-    user_data = User.query.get(id)
+    user = User.query.get(id)
     form_data = request.form
-    edit_first_name = form_data['first_name']
-    edit_last_name = form_data['last_name']
-    edit_img = form_data['image_url']
-    user_data.first_name = edit_first_name
-    user_data.last_name = edit_last_name
-
-    if edit_img == '':
-        user_data.image_url = DEFAULT_IMAGE_URL
-    else:
-        user_data.image_url = edit_img
-
+    user.first_name = form_data['first_name']
+    user.last_name = form_data['last_name']
+    user.image_url = form_data.get('image_url') or DEFAULT_IMAGE_URL
 
     db.session.commit()
+    flash('User Successfully Updated!')
+
     return redirect(f"/users/{id}")
-
-
-# Have a cancel button that returns to the detail page for a user, and a save button that updates the user.
-# - WE ARE ALREADY DOING IT HAHA
-
-
 
 # POST /users/[user-id]/delete
 # Delete the user.
@@ -123,4 +112,45 @@ def delete_user(id):
     User.query.filter_by(id = id).delete()
     db.session.commit()
     flash('User Successfully Deleted!')
+
     return redirect('/users')
+
+
+# GET /users/[user-id]/posts/new
+# Show form to add a post for that user.
+@app.get('/users/<int:id>/posts/new')
+def get_new_post_form(id):
+    user = User.query.get(id)
+
+    return render_template("new-post.html", user = user)
+
+
+# POST /users/[user-id]/posts/new
+# Handle add form; add post and redirect to the user detail page.
+
+@app.post('/users/<int:id>/posts/new')
+def add_new_post(id):
+    """Takes in form data and creates/adds new post to database. Returns
+    redirect to user's detail page."""
+    form = request.form
+    title = form['title']
+    content = form['content']
+
+    new_post = Post(title = title, content = content, user_id = id)
+    db.session.add(new_post)
+    db.session.commit()
+    flash('Post Successfully Added!')
+
+    return redirect(f"/users/{id}")
+
+# GET /posts/[post-id]
+# Show a post.
+
+# Show buttons to edit and delete the post.
+
+# GET /posts/[post-id]/edit
+# Show form to edit a post, and to cancel (back to user page).
+# POST /posts/[post-id]/edit
+# Handle editing of a post. Redirect back to the post view.
+# POST /posts/[post-id]/delete
+# Delete the post.

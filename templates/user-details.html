@@ -5,16 +5,29 @@
 <!-- Testing for rendering user-details -->
 
 {% block content%}
-<img src="{{user_data.image_url}}" alt="">
-{% block heading %} {{user_data.first_name}} {{user_data.last_name}} {% endblock %}
+<img src="{{user.image_url}}" alt="">
+{% block heading %} {{user.first_name}} {{user.last_name}} {% endblock %}
 
-<!-- <form action="/edit-user/{{user_data.id}}"> -->
+<!-- <form action="/edit-user/{{user.id}}"> -->
 <span>
-<a href="/users/{{user_data.id}}/edit">edit</a>
+<a href="/users/{{user.id}}/edit">Edit</a>
 </span>
 <!-- </form> -->
-<form action='/users/{{user_data.id}}/delete' method="POST">
+<form action='/users/{{user.id}}/delete' method="POST">
   <button>Delete</button>
 </form>
+
+<section>
+  <h2>Posts</h2>
+  <ul>
+    {% for post in posts %}
+      <li>
+        <a href="/posts/{{post.id}}">{{post.title}}</a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <a href="/users/{{user.id}}/posts/new">Add Post</a>
+</section>
 
 {% endblock %}

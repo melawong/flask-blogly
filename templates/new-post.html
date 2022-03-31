@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} New Post Form {% endblock %}
+
+{% block heading %}
+  Add Post For {{user.first_name}} {{user.last_name}}
+{% endblock %}
+
+{% block content%}
+<form action="/users/{{user.id}}/posts/new" method="POST">
+  <input type="text" required label="Title"
+  name="title" placeholder="Enter Your Title Here">
+  <input type="text" required label="Content"
+  name="content" placeholder="Enter Your Post Content Here">
+
+  <div>
+    <button type="submit" name="button">Add</button>
+    <!--this is really just a hyperlink!! styled to look like a button-->
+    <a href="/users/{{user.id}}">Cancel</a>
+  </div>
+
+</form>
+
+
+ {% endblock %}
