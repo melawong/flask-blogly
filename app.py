@@ -146,10 +146,24 @@ def add_new_post(id):
 # GET /posts/[post-id]
 # Show a post.
 
+@app.get("/posts/<int:id>")
+def show_post(id):
+    """Retrieves and renders template wth post"""
+    post = Post.query.get(id)
+
+    return render_template("post.html", post = post)
+
 # Show buttons to edit and delete the post.
 
 # GET /posts/[post-id]/edit
 # Show form to edit a post, and to cancel (back to user page).
+
+@app.get("/posts/<int:id>/edit")
+def render_edit_post_page(id):
+    post = Post.query.get(id)
+
+    return render_template("edit-post.html", post = post)
+
 # POST /posts/[post-id]/edit
 # Handle editing of a post. Redirect back to the post view.
 # POST /posts/[post-id]/delete
