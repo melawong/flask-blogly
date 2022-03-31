@@ -1,7 +1,7 @@
 """Blogly application."""
 
 from flask import Flask, redirect, render_template, request, flash
-from models import db, connect_db, User
+from models import db, connect_db, User, DEFAULT_IMAGE_URL
 from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
@@ -55,6 +55,10 @@ def process_new_user_form():
     first_name = form_data['first_name']
     last_name = form_data['last_name']
     img = form_data['image_url']
+
+    if img == '':
+        img = DEFAULT_IMAGE_URL
+
     new_user = User(first_name = first_name, last_name = last_name, image_url = img)
     db.session.add(new_user)
     db.session.commit()
@@ -94,7 +98,13 @@ def process_update(id):
     edit_img = form_data['image_url']
     user_data.first_name = edit_first_name
     user_data.last_name = edit_last_name
-    user_data.image_url = edit_img
+
+    if edit_img == '':
+        user_data.image_url = DEFAULT_IMAGE_URL
+    else:
+        user_data.image_url = edit_img
+
+
     db.session.commit()
     return redirect(f"/users/{id}")
 
