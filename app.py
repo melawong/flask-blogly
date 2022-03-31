@@ -7,8 +7,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
-
-
+app.config['SECRET_KEY'] = 'shhhh'
 
 connect_db(app)
 db.create_all()
@@ -74,7 +73,7 @@ def show_user_details(id):
 @app.get('/edit-user/<int:id>')
 def get_edit_page(id):
     user_data = User.query.get(id)
-    
+
     return render_template("edit-user.html", user_data = user_data)
 
 # POST /users/[user-id]/edit
@@ -103,3 +102,10 @@ def process_update(id):
 # POST /users/[user-id]/delete
 # Delete the user.
 
+@app.get('/users/<int:id>/delete')
+def delete_user(id):
+    '''Deletes user from database'''
+    User.query.filter_by(id = id).delete()
+    db.session.commit()
+    flash('User Successfully Deleted!')
+    return redirect('/users')

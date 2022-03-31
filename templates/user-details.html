@@ -12,10 +12,8 @@
 <a href="/edit-user/{{user_data.id}}">edit</a>
 </span>
 <!-- </form> -->
-
-
-
-
+<form action='/users/{{user_data.id}}/delete' method="GET">
   <button name="button">Delete</button>
+</form>
 
 {% endblock %}
