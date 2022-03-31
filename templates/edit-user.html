@@ -6,18 +6,18 @@
 
 {% block content%}
 
-<form action="/" method="POST">
+<form action="/users/update/{{user_data.id}}" method="POST">
   <input type="text" required label="First Name:"
-  name="first_name" value={{first_name}}>
+  name="first_name" value={{user_data.first_name}}>
   <input type="text" required label="Last Name:"
-  name="last_name" value={{last_name}}>
+  name="last_name" value={{user_data.last_name}}>
   <input type="text" label="Image Url:"
-  name="image_url" value={{image_link}}>
+  name="image_url" value={{user_data.image_url}}>
 
   <div>
     <button type="submit" name="button">Save</button>
     <!--this is really just a hyperlink!! styled to look like a button-->
-    <a href="/users">Cancel</a>
+    <a href="/users/{{user_data.id}}">Cancel</a>
   </div>
 
 

@@ -4,18 +4,18 @@
 
 
 {% block content%}
-{{user_data.image}}
+<img src="{{user_data.image_url}}" alt="">
 {% block heading %} {{user_data.first_name}} {{user_data.last_name}} {% endblock %}
 
-<form action="/edit-user.html">
+<!-- <form action="/edit-user/{{user_data.id}}"> -->
 <span>
-  <button type="submit" name="button">Edit</button>
+<a href="/edit-user/{{user_data.id}}">edit</a>
 </span>
-</form>
+<!-- </form> -->
 
 
 
 
-  <button type="submit" name="button">Delete</button>
+  <button name="button">Delete</button>
 
 {% endblock %}

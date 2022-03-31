@@ -7,15 +7,14 @@
 
 {% block content %}
 
-{% for user in users %}
 
-<ol>
+<ul>
+    {% for user in users %}
     <li>   <!--make an anchor tag. when we click each one, how will we see correct person?-->
-        {{user.first_name}}
+        <a href="/users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a>
     </li>
-</ol>
-
-{% endfor %}
+    {% endfor %}
+</ul>
 
 <form action="/users/new">
     <button>Add user</button>

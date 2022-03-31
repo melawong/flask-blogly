@@ -1,6 +1,6 @@
 """Blogly application."""
 
-from flask import Flask, redirect, render_template, request
+from flask import Flask, redirect, render_template, request, flash
 from models import db, connect_db, User
 
 app = Flask(__name__)
@@ -60,21 +60,46 @@ def process_form():
 
 # GET /users/[user-id]
 # Show information about the given user.
+# Have a button to get to their edit page, and to delete the user.
 @app.get('/users/<int:id>')
 def show_user_details(id):
     user_data = User.query.get(id)
-    breakpoint()
-    return render_template(f"/user-details/{id}.html", user_data = user_data)
+
+    return render_template("user-details.html", user_data = user_data)
 
 
-# Have a button to get to their edit page, and to delete the user.
 
 # GET /users/[user-id]/edit
 # Show the edit page for a user.
-
-# Have a cancel button that returns to the detail page for a user, and a save button that updates the user.
+@app.get('/edit-user/<int:id>')
+def get_edit_page(id):
+    user_data = User.query.get(id)
+    
+    return render_template("edit-user.html", user_data = user_data)
 
 # POST /users/[user-id]/edit
 # Process the edit form, returning the user to the /users page.
+
+@app.post('/users/update/<int:id>')
+def process_update(id):
+    """accepts form data and adds new user to db"""
+    user_data = User.query.get(id)
+    form_data = request.form
+    edit_first_name = form_data['first_name']
+    edit_last_name = form_data['last_name']
+    edit_img = form_data['image_url']
+    user_data.first_name = edit_first_name
+    user_data.last_name = edit_last_name
+    user_data.image_url = edit_img
+    db.session.commit()
+    return redirect(f"/users/{id}")
+
+
+# Have a cancel button that returns to the detail page for a user, and a save button that updates the user.
+# - WE ARE ALREADY DOING IT HAHA
+
+
+
 # POST /users/[user-id]/delete
 # Delete the user.
+
