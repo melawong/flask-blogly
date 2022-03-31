@@ -6,7 +6,9 @@
 
 {% block content%}
 
-<form action="/users/update/{{user_data.id}}" method="POST">
+<!-- Testing for rendering edit-user -->
+
+<form action="/users/{{user_data.id}}/edit" method="POST">
   <input type="text" required label="First Name:"
   name="first_name" value={{user_data.first_name}}>
   <input type="text" required label="Last Name:"

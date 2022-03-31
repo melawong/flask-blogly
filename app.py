@@ -2,12 +2,15 @@
 
 from flask import Flask, redirect, render_template, request, flash
 from models import db, connect_db, User
+from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SECRET_KEY'] = 'shhhh'
+debug = DebugToolbarExtension(app)
+
 
 connect_db(app)
 db.create_all()
@@ -46,8 +49,8 @@ def add_user():
 # Process the add form, adding a new user and going back to /users
 
 @app.post('/users/new')
-def process_form():
-    """accepts form data and adds new user to db"""
+def process_new_user_form():
+    """Accepts form data and adds new user to db"""
     form_data = request.form
     first_name = form_data['first_name']
     last_name = form_data['last_name']
@@ -62,6 +65,7 @@ def process_form():
 # Have a button to get to their edit page, and to delete the user.
 @app.get('/users/<int:id>')
 def show_user_details(id):
+    """Accepts user detail request and user id, renders template corresponding to the id"""
     user_data = User.query.get(id)
 
     return render_template("user-details.html", user_data = user_data)
@@ -70,8 +74,9 @@ def show_user_details(id):
 
 # GET /users/[user-id]/edit
 # Show the edit page for a user.
-@app.get('/edit-user/<int:id>')
+@app.get('/users/<int:id>/edit')
 def get_edit_page(id):
+    """Renders template to the edit-user.html with the correct id"""
     user_data = User.query.get(id)
 
     return render_template("edit-user.html", user_data = user_data)
@@ -79,9 +84,9 @@ def get_edit_page(id):
 # POST /users/[user-id]/edit
 # Process the edit form, returning the user to the /users page.
 
-@app.post('/users/update/<int:id>')
+@app.post('/users/<int:id>/edit')
 def process_update(id):
-    """accepts form data and adds new user to db"""
+    """Accepts form data and adds new user to db"""
     user_data = User.query.get(id)
     form_data = request.form
     edit_first_name = form_data['first_name']
@@ -102,7 +107,7 @@ def process_update(id):
 # POST /users/[user-id]/delete
 # Delete the user.
 
-@app.get('/users/<int:id>/delete')
+@app.post('/users/<int:id>/delete')
 def delete_user(id):
     '''Deletes user from database'''
     User.query.filter_by(id = id).delete()
