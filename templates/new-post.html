@@ -6,7 +6,10 @@
   Add Post For {{user.first_name}} {{user.last_name}}
 {% endblock %}
 
+
 {% block content%}
+<!-- Testing for new post form -->
+
 <form action="/users/{{user.id}}/posts/new" method="POST">
   <input type="text" required label="Title"
   name="title" placeholder="Enter Your Title Here">

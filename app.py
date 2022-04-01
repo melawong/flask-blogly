@@ -118,9 +118,10 @@ def delete_user(id):
 
 # GET /users/[user-id]/posts/new
 # Show form to add a post for that user.
-@app.get('/users/<int:id>/posts/new')
-def get_new_post_form(id):
-    user = User.query.get(id)
+@app.get('/users/<int:userid>/posts/new')
+def get_new_post_form(userid):
+    """Renders template for adding a new post"""
+    user = User.query.get_or_404(userid)
 
     return render_template("new-post.html", user = user)
 
@@ -128,43 +129,76 @@ def get_new_post_form(id):
 # POST /users/[user-id]/posts/new
 # Handle add form; add post and redirect to the user detail page.
 
-@app.post('/users/<int:id>/posts/new')
-def add_new_post(id):
+@app.post('/users/<int:userid>/posts/new')
+def add_new_post(userid):
     """Takes in form data and creates/adds new post to database. Returns
-    redirect to user's detail page."""
+    redirect to user's detail page"""
+
     form = request.form
     title = form['title']
     content = form['content']
 
-    new_post = Post(title = title, content = content, user_id = id)
+    #make sure user exists before allowing a new post!
+    User.query.get_or_404(userid)
+
+    new_post = Post(title = title, content = content, user_id = userid)
     db.session.add(new_post)
     db.session.commit()
     flash('Post Successfully Added!')
 
-    return redirect(f"/users/{id}")
+    return redirect(f"/users/{userid}")
 
 # GET /posts/[post-id]
 # Show a post.
 
-@app.get("/posts/<int:id>")
-def show_post(id):
-    """Retrieves and renders template wth post"""
-    post = Post.query.get(id)
+@app.get("/posts/<int:post_id>")
+def show_post(post_id):
+    """Retrieves post and renders template for post viewing"""
+    post = Post.query.get_or_404(post_id)
 
-    return render_template("post.html", post = post)
+    return render_template("view-post.html", post = post)
 
 # Show buttons to edit and delete the post.
 
 # GET /posts/[post-id]/edit
 # Show form to edit a post, and to cancel (back to user page).
 
-@app.get("/posts/<int:id>/edit")
-def render_edit_post_page(id):
-    post = Post.query.get(id)
+@app.get("/posts/<int:post_id>/edit")
+def render_edit_post_page(post_id):
+    """Renders edit post template."""
+    post = Post.query.get_or_404(post_id)
 
     return render_template("edit-post.html", post = post)
 
 # POST /posts/[post-id]/edit
 # Handle editing of a post. Redirect back to the post view.
+
+@app.post("/posts/<int:post_id>/edit")
+def submit_post_edit(post_id):
+    """Retrieves form data and commits changes to database
+    Returns redirect to post view"""
+    post = Post.query.get_or_404(post_id)
+    form = request.form
+    post.title = form['title']
+    post.content = form['content']
+
+    db.session.commit()
+    flash('Post Successfully Updated!')
+
+    return redirect(f"/posts/{post_id}")
+
 # POST /posts/[post-id]/delete
 # Delete the post.
+
+@app.post('/posts/<int:post_id>/delete')
+def delete_post(post_id):
+    """Deletes post from database and redirects to user page."""
+    getpost = Post.query.get(post_id)
+    user_id = getpost.user_id
+
+    Post.query.filter_by(id = post_id).delete()
+
+    db.session.commit()
+    flash('Post Successfully Deleted!')
+
+    return redirect(f'/users/{user_id}')

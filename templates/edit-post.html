@@ -4,23 +4,33 @@
 
 {% block heading %} Edit Post {{post.title}} {% endblock %}
 
+<!-- Testing for edit post template-->
+
 {% block content%}
 
 <form action="/posts/{{post.id}}/edit" method="POST">
     <label for="">Title:</label>
-    <input type="text" required label="Title"
-    name="title" value="{{post.title}}">
+    <input
+      type="text"
+      required
+      label="Title"
+      name="title"
+      value="{{post.title}}">
     <br>
     <label for="">Content:</label>
-    <input type="text" required label="Content"
-    name="content" value="{{post.content}}">
-  
+    <input
+      type="text"
+      required
+      label="Content"
+      name="content"
+      value="{{post.content}}">
+
     <div>
-      <button type="submit" name="button">Confirm</button>
+      <button type="submit">Confirm</button>
       <!--this is really just a hyperlink!! styled to look like a button-->
       <a href="/posts/{{post.id}}">Cancel</a>
     </div>
-  
+
   </form>
 
 {% endblock %}
